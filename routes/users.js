@@ -14,6 +14,7 @@ router.post('/', async function (ctx, next) {
   }
   let keyword = new RegExp(ctx.request.body.keyword, 'i')
   ctx.body = {
+    code: 200,
     data: await users.find(
       {
         $or: [
@@ -35,17 +36,12 @@ router.post('/create', async function (ctx, next) {
   let params = ctx.request.body;
   params.create_time = moment(new Date()).format('YYYY/MM/DD hh:mm:ss');
   params.update_time = moment(new Date()).format('YYYY/MM/DD hh:mm:ss');
-  if(ctx.request.body !== {}){
-    let nuser = new users(ctx.request.body)
-    await nuser.save((err,res) => {
-      if(!err){
-        ctx.body = {
-          status: true,
-          data: 'success'
-        }
-      }
-    })
-  }
+  await users.create(ctx.request.body).then(res => {
+    ctx.body = {
+      code: 200,
+      data: 'success'
+    }
+  })
 })
 
 router.post('/update', async function (ctx, next) {
@@ -53,7 +49,8 @@ router.post('/update', async function (ctx, next) {
   params.update_time = moment(new Date()).format('YYYY/MM/DD hh:mm:ss');
   await users.findByIdAndUpdate(params.id,{$set:params}).then(res => {
     ctx.body = {
-      status: true
+      code: 200,
+      data: 'success'
     }
   })
 })
@@ -61,8 +58,10 @@ router.post('/update', async function (ctx, next) {
 router.post('/remove', async function (ctx, next) {
   let params = ctx.request.body;
   await users.findByIdAndRemove(params._id).then(res => {
+    console.log(res)
     ctx.body = {
-      status: true
+      code: 200,
+      data: 'success'
     }
   })
 })
