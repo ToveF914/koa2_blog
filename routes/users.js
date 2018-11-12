@@ -51,12 +51,20 @@ router.post('/create', async function (ctx, next) {
 router.post('/update', async function (ctx, next) {
   let params = ctx.request.body;
   params.update_time = moment(new Date()).format('YYYY/MM/DD hh:mm:ss');
-  users.findByIdAndUpdate(params.id,{$set:params}).then(res => console.log(res))
+  await users.findByIdAndUpdate(params.id,{$set:params}).then(res => {
+    ctx.body = {
+      status: true
+    }
+  })
 })
 
 router.post('/remove', async function (ctx, next) {
   let params = ctx.request.body;
-  users.findByIdAndRemove(params._id).then(res => console.log(res))
+  await users.findByIdAndRemove(params._id).then(res => {
+    ctx.body = {
+      status: true
+    }
+  })
 })
 
 module.exports = router
